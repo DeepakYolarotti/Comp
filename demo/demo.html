@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Bar</title>
+    <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">Sainapse inc.</div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Products</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#" id="signupBtn">Sign up</a></li> <!-- Added ID to the signup link -->
+        </ul>
+        <div class="login">
+            <a href="#" id="loginBtn">Login</a>
+        </div>
+    </nav>
+
+    <div id="loginPopup" class="login-popup">
+        <div class="login-popup-content">
+            <span class="close" id="closeBtn">&times;</span>
+            <h2>Login</h2>
+            <form id="loginForm">
+                <input type="email" id="emailInput" placeholder="Email">
+                <input type="password" id="passwordInput" placeholder="Password">
+                <button type="submit">Login</button>
+            </form>
+            <p>Don't have an account? <a href="#" id="signupLink">Sign up</a></p> <!-- Added ID to the signup link -->
+        </div>
+    </div>
+
+    <!-- Signup Popup -->
+    <div id="signupPopup" class="login-popup" style="display: none;"> <!-- Initially hidden -->
+        <div class="login-popup-content">
+            <span class="close" id="closeSignupBtn">&times;</span>
+            <h2>Sign up</h2>
+            <form id="signupForm">
+                <input type="email" id="signupEmailInput" placeholder="Email">
+                <input type="password" id="signupPasswordInput" placeholder="Password">
+                <input type="password" id="confirmPasswordInput" placeholder="Confirm Password">
+                <button type="submit">Sign up</button>
+            </form>
+            <p>Already have an account? <a href="#" id="loginLink">Login</a></p> <!-- Added ID to the login link -->
+        </div>
+    </div>
+
+    <script src="demo.js"></script>
+    <script>
+        // Get references to the signup and login links
+        const signupLink = document.getElementById('signupLink');
+        const loginLink = document.getElementById('loginLink');
+
+        // Get references to the signup and login popups
+        const signupPopup = document.getElementById('signupPopup');
+        const loginPopup = document.getElementById('loginPopup');
+
+        // Open signup popup when signup link is clicked
+        signupLink.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default link behavior
+            signupPopup.style.display = 'block'; // Show the signup popup
+            loginPopup.style.display = 'none'; // Hide the login popup
+        });
+
+        // Open login popup when login link is clicked
+        loginLink.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default link behavior
+            loginPopup.style.display = 'block'; // Show the login popup
+            signupPopup.style.display = 'none'; // Hide the signup popup
+        });
+    </script>
+</body>
+</html>

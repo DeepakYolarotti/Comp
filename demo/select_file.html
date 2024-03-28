@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        #fileFormat {
+            margin-top: 20px;
+        }
+
+        #resultTable {
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        #resultTable th, #resultTable td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <button id="selectFileBtn">Select File</button>
+    <button id="submitBtn">Submit</button>
+    <div id="fileFormat"></div>
+    <table id="resultTable">
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Roll Number</th>
+                <th>Average Marks</th>
+            </tr>
+        </thead>
+        <tbody id="resultBody"></tbody>
+    </table>
+
+    <input type="file" accept=".xlsx, .xls" id="fileInput" style="display:none;">
+
+    <script>
+        document.getElementById("selectFileBtn").addEventListener("click", function() {
+            document.getElementById("fileInput").click();
+        });
+
+        document.getElementById("submitBtn").addEventListener("click", function() {
+            const fileInput = document.getElementById("fileInput");
+            const selectedFile = fileInput.files[0];
+            if (selectedFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheetName = workbook.SheetNames[0];
+                    const sheet = workbook.Sheets[sheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+                    const resultBody = document.getElementById("resultBody");
+                    resultBody.innerHTML = '';
+
+                    let totalMarks = 0;
+                    let totalStudents = 0;
+
+                    jsonData.forEach((row, index) => {
+                        const marks = Object.values(row);
+                        const studentName = row["Student Name"];
+                        const rollNumber = row["Roll Number"];
+                        const averageMark = marks.reduce((acc, val) => {
+                            if (!isNaN(val)) { // Check if the value is a number
+                                totalMarks += val;
+                                totalStudents++;
+                                return acc + val;
+                            } else {
+                                return acc;
+                            }
+                        }, 0) / marks.length;
+                        
+                        const newRow = document.createElement("tr");
+                        newRow.innerHTML = `<td>${studentName}</td><td>${rollNumber}</td><td>${averageMark.toFixed(2)}</td>`;
+                        resultBody.appendChild(newRow);
+                    });
+
+                    const overallAverageMark = totalMarks / totalStudents;
+                    console.log("Overall Average Mark:", overallAverageMark.toFixed(2));
+
+                    // Create a new workbook
+                    const wb = XLSX.utils.book_new();
+                    // Convert student data to a worksheet
+                    const ws = XLSX.utils.json_to_sheet(jsonData);
+                    // Add the worksheet to the workbook
+                    XLSX.utils.book_append_sheet(wb, ws, "Students");
+                    // Save the workbook as an Excel file
+                    XLSX.writeFile(wb, "students_data.xlsx");
+                };
+                reader.readAsArrayBuffer(selectedFile);
+            } else {
+                alert("Please select a file.");
+            }
+        });
+
+        document.getElementById("fileInput").addEventListener("change", function() {
+            const fileInput = document.getElementById("fileInput");
+            const fileFormatDiv = document.getElementById("fileFormat");
+            const selectedFile = fileInput.files[0];
+            if (selectedFile) {
+                fileFormatDiv.textContent = "Selected file format: " + selectedFile.type;
+            } else {
+                fileFormatDiv.textContent = "";
+            }
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    
+</body>
+</html>
