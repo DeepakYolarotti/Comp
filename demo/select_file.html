@@ -41,7 +41,7 @@
         #resultTable {
             margin-top: 20px;
             border-collapse: collapse;
-        }
+        }    
 
         #resultTable th, #resultTable td {
             border: 1px solid #ddd;
@@ -92,8 +92,8 @@
 
                     jsonData.forEach((row, index) => {
                         const marks = Object.values(row);
-                        const studentName = row["Student Name"];
-                        const rollNumber = row["Roll Number"];
+                        const studentName = row["Students Name"];
+                        const rollNumber = row["Student Roll Num"];
                         const averageMark = marks.reduce((acc, val) => {
                             if (!isNaN(val)) { // Check if the value is a number
                                 totalMarks += val;
@@ -111,15 +111,6 @@
 
                     const overallAverageMark = totalMarks / totalStudents;
                     console.log("Overall Average Mark:", overallAverageMark.toFixed(2));
-
-                    // Create a new workbook
-                    const wb = XLSX.utils.book_new();
-                    // Convert student data to a worksheet
-                    const ws = XLSX.utils.json_to_sheet(jsonData);
-                    // Add the worksheet to the workbook
-                    XLSX.utils.book_append_sheet(wb, ws, "Students");
-                    // Save the workbook as an Excel file
-                    XLSX.writeFile(wb, "students_data.xlsx");
                 };
                 reader.readAsArrayBuffer(selectedFile);
             } else {
@@ -128,7 +119,7 @@
         });
 
         document.getElementById("fileInput").addEventListener("change", function() {
-            const fileInput = document.getElementById("fileInput");
+            const fileInput = document.getElementById("fileInput"); 
             const fileFormatDiv = document.getElementById("fileFormat");
             const selectedFile = fileInput.files[0];
             if (selectedFile) {
@@ -140,6 +131,5 @@
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
-    
 </body>
 </html>

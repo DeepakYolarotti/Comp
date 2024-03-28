@@ -52,3 +52,21 @@ document.addEventListener("DOMContentLoaded", function() {
   
 
 
+jsonData.forEach((row, index) => {
+    const marks = Object.values(row);
+    const studentName = row["Student Name"];
+    const rollNumber = row["Roll Number"];
+    const averageMark = marks.reduce((acc, val) => {
+        if (!isNaN(val)) { // Check if the value is a number
+            totalMarks += val;
+            totalStudents++;
+            return acc + val;
+        } else {
+            return acc;
+        }
+    }, 0) / marks.length;
+    
+    const newRow = document.createElement("tr");
+    newRow.innerHTML = `<td>${studentName}</td><td>${rollNumber}</td><td>${averageMark.toFixed(2)}</td>`;
+    resultBody.appendChild(newRow);
+});
